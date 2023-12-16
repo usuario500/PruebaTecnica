@@ -1,0 +1,32 @@
+//pruebas de consultas
+###
+GET http://127.0.0.1:8000/personas
+Content-Type: application/json
+
+###
+GET http://127.0.0.1:8000/personas/4
+Content-Type: application/json
+
+//prueba de insercion
+###
+POST http://127.0.0.1:8000/personas
+Content-Type: application/json
+
+{
+    "nombre": "Elias",
+    "edad": 34
+}
+
+//prueba de actualuzacion
+###
+PUT http://127.0.0.1:8000/personas/4
+Content-Type: application/json
+
+{
+    "edad": 27
+}
+
+//prueba de eliminacion
+###
+DELETE http://127.0.0.1:8000/personas/4
+Content-Type: application/json
