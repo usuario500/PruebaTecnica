@@ -62,6 +62,7 @@ $app->singleton(
 */
 
 $app->configure('app');
+$app->configure('services');
 
 /*
 |--------------------------------------------------------------------------
@@ -93,10 +94,11 @@ $app->configure('app');
 |
 */
 
-// $app->register(App\Providers\AppServiceProvider::class);
+$app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(App\Providers\DatabaseServiceProvider::class);
+
 
 
 /*
@@ -109,6 +111,9 @@ $app->register(App\Providers\DatabaseServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
+$app->middleware([
+    App\Http\Middleware\CorsMiddleware::class
+]);
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
