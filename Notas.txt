@@ -1,0 +1,7 @@
+La prueba está hecha en partes separadas, el frontend y el backend. 
+Esto se hizo así por facilidad. La parte del frontend se hizo en el framework
+Vue.js 2 y el backend se hizo en Lumen.
+
+
+
+
