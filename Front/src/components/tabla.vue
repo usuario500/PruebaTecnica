@@ -1,8 +1,16 @@
 <template>
     <div>
         <!-- Mostrar personas en la base de datos-->
-        <div v-if="show">   
+        <div v-if="show">
+            <div>
+                <form @submit.prevent="buscarPersona(idFind)">
+                    <label for="buscar">Buscar por id:</label>
+                    <input type="number" id="buscar" v-model="idFind"required>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
             <button id="app" @click="show=false">Añadir</button>
+            <button @click="obtenerPersona">Restrableser</button>
             <table id="tabla">
                 <thead>
                     <tr>
@@ -22,6 +30,9 @@
                     </tr>
                 </tbody>
             </table>
+            <div v-if="personas.length == 0">
+                <label for="mensaje">No hay personas</label>
+            </div>
         </div>
 
         <!-- Añadir y actualizar persona-->
@@ -42,10 +53,10 @@
             <!-- Actualizar -->
             <div v-else id="app">
                 <label for="nombre">Nombre:</label>
-                <input type="text" id="nombre" v-model="editedPersona.nombre" />
+                <input type="text" id="nombre" v-model="auxedPersona.nombre" />
                 <br>
                 <label for="correo">Edad:</label>
-                <input type="number" id="edad" v-model="editedPersona.edad" />
+                <input type="number" id="edad" v-model="auxedPersona.edad" />
                 <br>
                 <button @click="canselar">Canselar</button>
                 <button @click="actualizarPersona">Enviar</button>
@@ -62,12 +73,14 @@ export default {
         return {
             show: true,
             añadir: true,
+            buscar: false,
+            idFind: '',
             personas:[],
             addedPersona: {
               nombre: '',
               edad: ''
             },
-            editedPersona: {
+            auxedPersona: {
               id: 0, 
               nombre: '',
               edad: ''
@@ -79,6 +92,15 @@ export default {
         //Metodos para insertar, leer, actualizar y eliminar
         obtenerPersona() {
             api.get('/personas').then(response => {
+                this.personas = response.data;
+                this.idFind = '';
+                console.log(this.personas);
+            }).catch(error=>{
+                console.error(error);
+            })
+        },
+        buscarPersona(id) {
+            api.get('/personas/' + id).then(response => {
                 this.personas = response.data;
                 console.log(this.personas);
             }).catch(error=>{
@@ -98,10 +120,10 @@ export default {
             })
         },
         actualizarPersona() {
-            api.put('/personas/' + this.editedPersona.id,
+            api.put('/personas/' + this.auxedPersona.id,
               {
-                "nombre": this.editedPersona.nombre,
-                "edad" : this.editedPersona.edad
+                "nombre": this.auxedPersona.nombre,
+                "edad" : this.auxedPersona.edad
               } ).then(response => {
                 this.obtenerPersona();
                 this.canselar();
@@ -122,17 +144,18 @@ export default {
         ,canselar(){
             this.show = true;
             this.añadir = true;
+            this.buscar = false;
             this.$nextTick(() => {
               this.addedPersona = { nombre: '', edad: ''}
             });
             this.$nextTick(() => {
-              this.editedPersona = { id: 0, nombre: '', edad: ''}
+              this.auxedPersona = { id: 0, nombre: '', edad: ''}
             })
         },
         editar(persona){
             this.añadir = false;
             this.show = false;
-            this.editedPersona = { ...persona }
+            this.auxedPersona = { ...persona }
         }
     },
     mounted() {
